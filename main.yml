@@ -1,0 +1,88 @@
+---
+- hosts: all
+  tags: always
+  become: true
+  pre_tasks:
+    - name: update package manager
+      tags: always
+      apt:
+        update_cache: yes
+        upgrade: dist
+      changed_when: False
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+# Roles
+- hosts: all
+  tags: base
+  become: true
+  roles:
+    - base
+  vars:
+    nfs_mount_point:
+      - {
+          name: 192.168.31.4:/mnt/WD-1D-SSD-STRIPE/Docker,
+          path: /mnt/Docker,
+          setting: "nfs nolock,soft,rw,vers=3 0 0",
+        }
+      - {
+          name: 192.168.31.4:/mnt/SEAGATE-1D-4TB-STRIPE/Vault,
+          path: /mnt/Vault,
+          setting: "nfs nolock,soft,rw,vers=3 0 0",
+        }
+      - {
+          name: 192.168.31.4:/mnt/WD-1D-1TB-STRIPE/Media,
+          path: /mnt/Media,
+          setting: "nfs nolock,soft,rw,vers=3 0 0",
+        }
+      # - {
+      #     name: 192.168.31.4:/mnt/WD-1D-SSD-STRIPE/Dev,
+      #     path: /mnt/Dev,
+      #     setting: "nfs nolock,soft,rw,vers=3 0 0",
+      #   }
+    # smb_mount_point:
+    #   - {
+    #       name: //192.168.31.4/Vault,
+    #       path: /mnt/Vault,
+    #       setting: "cifs defaults,credentials=/root/.smbcredential,uid=1000,gid=1000 0 0",
+    #     }
+    #   - {
+    #       name: //192.168.31.4/Media,
+    #       path: /mnt/Media,
+    #       setting: "cifs defaults,credentials=/root/.smbcredential,uid=1000,gid=1000 0 0",
+    #     }
+    #   - {
+    #       name: //192.168.31.4/Dev,
+    #       path: /mnt/Dev,
+    #       setting: "cifs defaults,credentials=/root/.smbcredential,uid=1000,gid=1000 0 0",
+    #     }
+
+- hosts: vm
+  tags: vm
+  become: true
+  roles:
+    - vm
+
+- hosts: server
+  tags: server
+  become: true
+  roles:
+    - server
+  vars:
+    docker_apps:
+      - portainer
+      - wireguard
+      - adguard
+      - nginx
+      - bitwarden
+      - influxdb
+      - jackett
+      - radarr
+      - sonarr
+      - bazarr
+      - readarr
+      - transmission
+      - cadvisor
+      - node-exporter
+      - prometheus
+      - grafana
+      - plex

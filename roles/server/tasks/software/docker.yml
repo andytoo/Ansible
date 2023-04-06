@@ -1,0 +1,62 @@
+- name: install prerequisites for docker repository
+  package:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: latest
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: add docker gpg key
+  apt_key:
+    url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    state: present
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: add docker apt repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+    state: present
+    update_cache: yes
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: install docker
+  package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: latest
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: start and enable docker daemon
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: start and enable containerd daemon
+  service:
+    name: containerd
+    state: started
+    enabled: yes
+
+# - name: copy docker files
+#   copy:
+#     src: docker-compose
+#     dest: "/home/{{ lookup('env', 'USER') }}/docker/"
+#     owner: "{{ lookup('env', 'USER') }}"
+#     group: "{{ lookup('env', 'USER') }}"
+#     directory_mode: "0775"
+#     mode: "0755"
+#     force: false
+
+# - name: deploy docker apps
+#   command: "docker compose -f /home/{{ lookup('env', 'USER') }}/docker/docker-compose/{{ item }}/docker-compose.yml up -d"
+#   loop: "{{ docker_apps }}"
+
+- name: deploy docker apps
+  command: "docker compose -f /mnt/Docker/docker-compose/{{ item }}/docker-compose.yml up -d"
+  loop: "{{ docker_apps }}"

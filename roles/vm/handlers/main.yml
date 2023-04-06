@@ -1,0 +1,11 @@
+- name: enable qemu agent
+  service:
+    name: qemu-guest-agent
+    enabled: true
+  listen: "start qemu agent"
+
+- name: start qemu agent
+  service:
+    name: qemu-guest-agent
+    state: started
+  listen: "start qemu agent"

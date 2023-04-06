@@ -1,0 +1,5 @@
+- name: install qemu agent
+  package:
+    name: qemu-guest-agent
+    state: latest
+  notify: "start qemu agent"

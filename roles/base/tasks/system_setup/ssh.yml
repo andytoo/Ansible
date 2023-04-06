@@ -1,0 +1,17 @@
+- name: disable root login | sshd_config
+  lineinfile:
+    backup: yes
+    path: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+  notify:
+    - "restart ssh"
+
+- name: disable password login | sshd_config
+  lineinfile:
+    backup: yes
+    path: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+  notify:
+    - "restart ssh"

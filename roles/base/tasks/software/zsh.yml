@@ -1,0 +1,43 @@
+- name: install zsh
+  package:
+    name: zsh
+    state: latest
+
+- name: install oh-my-zsh
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh
+    dest: "/home/{{ lookup('env', 'USER') }}/.oh-my-zsh"
+    version: master
+    update: no
+
+- name: set zsh as default shell
+  user:
+    name: "{{ lookup('env', 'USER') }}"
+    shell: /bin/zsh
+
+- name: copy zshrc config
+  copy:
+    backup: yes
+    src: zshrc
+    dest: "/home/{{ lookup('env', 'USER') }}/.zshrc"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    mode: 0644
+
+- name: install zsh custom plugins
+  git:
+    repo: https://github.com/zsh-users/{{ item }}.git
+    dest: "/home/{{ lookup('env', 'USER') }}/.oh-my-zsh/custom/plugins/{{ item }}"
+    remote: master
+    update: no
+  loop:
+    - zsh-autosuggestions
+    - zsh-syntax-highlighting
+
+- name: set permissions for .oh-my-zsh
+  file:
+    path: "/home/{{ lookup('env', 'USER') }}/.oh-my-zsh"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    mode: "0775"
+    recurse: true

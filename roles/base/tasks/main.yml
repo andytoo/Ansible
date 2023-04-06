@@ -1,0 +1,9 @@
+- block:
+    # install software
+    - import_tasks: software/utilities.yml
+    - import_tasks: software/nfs.yml
+    - import_tasks: software/smb.yml
+    - import_tasks: software/zsh.yml
+    # setting
+    - import_tasks: system_setup/user.yml
+    - import_tasks: system_setup/ssh.yml

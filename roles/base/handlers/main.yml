@@ -1,0 +1,15 @@
+- name: mount nfs
+  shell: "mount {{ item.path }}"
+  loop: "{{ nfs_mount_point }}"
+  listen: "mount nfs"
+
+- name: mount smb
+  shell: "mount {{ item.path }}"
+  loop: "{{ nfs_mount_point }}"
+  listen: "mount smb"
+
+- name: restart ssh
+  service:
+    name: sshd
+    state: restarted
+  listen: "restart ssh"

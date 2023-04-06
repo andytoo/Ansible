@@ -1,0 +1,12 @@
+- name: install cifs-utils
+  package:
+    name: cifs-utils
+    state: latest
+
+- name: copy smbcredential
+  copy:
+    src: smbcredential
+    dest: /root/.smbcredential
+    owner: root
+    group: root
+    mode: 0400

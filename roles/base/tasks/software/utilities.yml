@@ -1,0 +1,11 @@
+- name: install utilities packages
+  package:
+    name:
+      - curl
+      - wget
+      - neofetch
+      - nano
+      - rsync
+      - cron
+      - git
+    state: latest

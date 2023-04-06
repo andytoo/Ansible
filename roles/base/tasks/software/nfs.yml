@@ -1,0 +1,24 @@
+- name: install nfs-common
+  package:
+    name: nfs-common
+    state: latest
+
+- name: mkdir nfs mount point
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  changed_when: false
+  loop: "{{ nfs_mount_point }}"
+
+- name: edit fstab config
+  lineinfile:
+    backup: yes
+    path: /etc/fstab
+    regexp: "^{{ item.name }}"
+    line: |
+      {{ item.name }} {{ item.path }} {{ item.setting }}
+  loop: "{{ nfs_mount_point }}"
+  notify: "mount nfs"
